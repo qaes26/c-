@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>كورس ++C متقدم - إعداد الطالب: قيس طلال الجازي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --text: #0f172a;
+      --muted: #475569;
+    }
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #e2e8f0;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(120deg, #0f172a, #1d4ed8);
+      color: #fff;
+      padding: 1.4rem 1.4rem 1rem;
+      text-align: center;
+    }
+    header h1 { margin: 0.5rem 0 0; font-size: 1.6rem; }
+    header p { margin: 0.2rem; opacity: 0.9; }
+    .badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #0f172a;
+      padding: 0.25rem 0.7rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      margin-bottom: 0.3rem;
+    }
+    nav {
+      background: #111827;
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      display: block;
+      font-size: 0.86rem;
+    }
+    nav a:hover { background: rgba(255, 255, 255, 0.08); }
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      padding: 1.5rem 1rem 5rem;
+    }
+    section {
+      background: var(--card);
+      margin-bottom: 1.25rem;
+      padding: 1.25rem 1.25rem 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+    }
+    h2 { margin-top: 0; color: #0f172a; }
+    .en {
+      direction: ltr;
+      text-align: left;
+      background: #eff6ff;
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.4rem;
+      margin-top: 0.55rem;
+      font-size: 0.9rem;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.83rem;
+      direction: ltr;
+      text-align: left;
+    }
+    code { font-family: Consolas, "Courier New", monospace; }
+    ul { padding-right: 1.25rem; }
+    .sub {
+      background: #f8fafc;
+      border-right: 3px solid #2563eb;
+      padding: 0.6rem 0.75rem;
+      border-radius: 0.5rem;
+      margin-top: 0.7rem;
+    }
+    .btn-wrap {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
+    .btn {
+      background: #2563eb;
+      color: #fff;
+      padding: 0.8rem 1.6rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .btn:hover { background: #1d4ed8; }
+    footer {
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    @media (max-width: 700px) {
+      nav { gap: 0.2rem; }
+      nav a { font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">إعداد الطالب: قيس طلال الجازي</div>
+    <h1>كورس ++C من الأساسيات إلى الكلاسات</h1>
+    <p>شرح عربي/إنجليزي + أمثلة حقيقية + صفحة اختبار منفصلة</p>
+  </header>
+
+  <nav>
+    <a href="#intro">مقدمة</a>
+    <a href="#c-structure">بنية البرنامج</a>
+    <a href="#vars">المتغيرات والأنواع</a>
+    <a href="#scope">النطاق والعمر</a>
+    <a href="#ptr-vs-ref">مؤشرات vs مراجع</a>
+    <a href="#dynamic">الذاكرة الديناميكية</a>
+    <a href="#oop">الكلاسات والتغليف</a>
+    <a href="#ctor">الباني والهادم</a>
+    <a href="#inherit">الوراثة</a>
+    <a href="#poly">Polymorphism</a>
+    <a href="#fileio">ملفات</a>
+    <a href="#to-questions">الاختبار</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- مقدمة -->
+    <section id="intro">
+      <h2>1. مقدمة سريعة</h2>
+      <p>
+        الهدف من هالموقع إنك ما تضل على مستوى "cout و cin" فقط، بل تدخل على منطقة السيطرة الحقيقية على الذاكرة
+        والكائنات، عشان لما تشوف كود دكتورك أو مشروع تخرجك ما تتفاجأ.
+      </p>
+      <div class="en">
+        The goal now is to go beyond basic I/O and learn how C++ manages memory, objects, and abstraction.
+        This is what makes C++ powerful (and a bit dangerous if you ignore memory).
+      </div>
+    </section>
+
+    <!-- بنية البرنامج -->
+    <section id="c-structure">
+      <h2>2. بنية برنامج C++ ولماذا نكتب الأشياء بهذا الترتيب؟</h2>
+      <p>
+        أي برنامج C++ يمر بثلاث مراحل تقريبًا: المعالجة المسبقة (preprocessing) → الترجمة (compilation) → الربط (linking).
+        لهذا السبب نكتب <code>#include</code> أولاً.
+      </p>
+      <pre><code>#include &lt;iostream&gt;        // تجهيز مكتبة الإدخال والإخراج
+using namespace std;      // اختصار std::
+
+int main() {              // نقطة الدخول
+    cout &lt;&lt; "Hello";      // جسم البرنامج
+    return 0;             // رجوع ناجح
+}</code></pre>
+      <div class="en">
+        The compiler needs to know the declarations before <code>main()</code>. That's why headers come first.
+      </div>
+    </section>
+
+    <!-- المتغيرات -->
+    <section id="vars">
+      <h2>3. المتغيرات وأنماط التخزين</h2>
+      <p>
+        غير إن فيه أنواع (int, double, char) فيه كمان "طريقة التخزين": محلي (داخل دالة)، عام (global)، وثابت (const).
+      </p>
+      <pre><code>int g = 10;          // متغير عام - متاح لكل الملف
+
+int main() {
+    const double PI = 3.14;   // ثابت لا يتغير
+    int x = 5;                // محلي داخل main
+}</code></pre>
+      <div class="en">
+        Global variables live for the whole program. Local variables live only inside the block.
+        <code>const</code> protects values from change.
+      </div>
+    </section>
+
+    <!-- النطاق والعمر -->
+    <section id="scope">
+      <h2>4. نطاق المتغير (Scope) وعمره (Lifetime)</h2>
+      <p>
+        النطاق = فين تقدر تشوف المتغير. العمر = متى ينشأ ومتى يُدمّر.
+      </p>
+      <pre><code>void test() {
+    int a = 10;    // ينشأ هنا، ينتهي بنهاية الدالة
+    {
+        int b = 20;  // ينشأ هنا، يموت بنهاية القوس
+    }
+}</code></pre>
+      <div class="en">
+        Block scope is important when you write large classes to avoid name conflicts.
+      </div>
+    </section>
+
+    <!-- مؤشرات vs مراجع -->
+    <section id="ptr-vs-ref">
+      <h2>5. المؤشرات مقابل المراجع (Pointers vs References)</h2>
+      <p class="sub">
+        هذه من أكثر الأشياء اللي تلخبط الطلاب. خلّينا نفصلها.
+      </p>
+      <p><strong>المؤشر</strong> متغير يخزن "عنوان" متغير آخر، ونقدر نغيره ليشير لشيء آخر.</p>
+      <pre><code>int x = 10;
+int *p = &x;   // p يشير إلى x
+*p = 50;       // غيرنا x عن طريق المؤشر
+</code></pre>
+      <p><strong>المرجع</strong> (Reference) هو اسم ثاني لنفس المتغير، ولا يمكن إعادة ربطه.</p>
+      <pre><code>int x = 10;
+int &r = x;   // r هو x
+r = 30;       // x صار 30
+</code></pre>
+      <div class="en">
+        A pointer can be reassigned and can be null. A reference must be initialized and cannot be null.
+        That's why references are safer for function parameters.
+      </div>
+      <p><strong>تمرير بالمرجع</strong> يوفر نسخ البيانات الكبيرة:</p>
+      <pre><code>void swap(int &a, int &b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}</code></pre>
+    </section>
+
+    <!-- الذاكرة الديناميكية -->
+    <section id="dynamic">
+      <h2>6. الذاكرة الديناميكية (Dynamic Memory) بـ new / delete</h2>
+      <p>
+        أحيانًا ما نعرف الحجم إلا وقت التشغيل (runtime) → نستخدم <code>new</code> لحجز ذاكرة و <code>delete</code> لتحريرها.
+      </p>
+      <pre><code>int *p = new int;   // حجز int في الهيب
+*p = 100;
+cout &lt;&lt; *p &lt;&lt; endl;
+delete p;           // لازم نمسح
+</code></pre>
+      <p>
+        لو بدنا مصفوفة حجمها يدخل من المستخدم:
+      </p>
+      <pre><code>int n;
+cin &gt;&gt; n;
+int *arr = new int[n];
+
+for (int i = 0; i &lt; n; i++)
+    cin &gt;&gt; arr[i];
+
+// ... استعمال المصفوفة ...
+
+delete[] arr;   // مهم جدا
+</code></pre>
+      <div class="en">
+        If you allocate with <code>new</code>, you must deallocate with <code>delete</code>.
+        If you allocate an array with <code>new[]</code>, you must free it with <code>delete[]</code>.
+        Otherwise you get a memory leak.
+      </div>
+    </section>
+
+    <!-- الكلاسات والتغليف -->
+    <section id="oop">
+      <h2>7. الكلاسات والتغليف (Encapsulation)</h2>
+      <p>
+        الفكرة: نخلي البيانات private، ونسمح بالوصول لها عن طريق دوال public.
+      </p>
+      <pre><code>class BankAccount {
+private:
+    double balance;      // ما حدا يلمسه مباشرة
+public:
+    BankAccount() {      // باني افتراضي
+        balance = 0;
+    }
+    void deposit(double amount) {
+        if (amount &gt; 0) balance += amount;
+    }
+    double getBalance() {
+        return balance;
+    }
+};</code></pre>
+      <div class="en">
+        This is encapsulation: protect the data, expose behavior.
+      </div>
+    </section>
+
+    <!-- الباني والهادم -->
+    <section id="ctor">
+      <h2>8. الباني (Constructor) والهادم (Destructor)</h2>
+      <p>
+        الباني دالة تتنفّذ تلقائيًا عند إنشاء الكائن. الهادم يتنفّذ عند انتهاء عمره لتنظيف الموارد.
+      </p>
+      <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class FileHandler {
+public:
+    FileHandler() {
+        cout &lt;&lt; "Opening file..." &lt;&lt; endl;
+    }
+    ~FileHandler() {
+        cout &lt;&lt; "Closing file..." &lt;&lt; endl;
+    }
+};
+
+int main() {
+    FileHandler f;  // هنا يستدعي الباني
+    // ... شغل ...
+} // هنا يستدعي الهادم
+</code></pre>
+      <div class="en">
+        Constructors initialize objects. Destructors clean up (especially important with dynamic memory or files).
+      </div>
+    </section>
+
+    <!-- الوراثة -->
+    <section id="inherit">
+      <h2>9. الوراثة (Inheritance)</h2>
+      <p>
+        نستخدمها لما يكون عندنا كلاس عام (Person) ونبني عليه كلاس أكثر تحديدًا (Student).
+      </p>
+      <pre><code>class Person {
+public:
+    string name;
+    void sayHi() {
+        cout &lt;&lt; "Hi, I'm " &lt;&lt; name &lt;&lt; endl;
+    }
+};
+
+class Student : public Person {
+public:
+    int id;
+};</code></pre>
+      <div class="en">
+        <code>public</code> inheritance means: "a Student is a Person". So it inherits public members.
+      </div>
+    </section>
+
+    <!-- تعدد الأشكال -->
+    <section id="poly">
+      <h2>10. تعدد الأشكال (Polymorphism) والـ virtual</h2>
+      <p>
+        هذا من أكثر الأشياء "شكلها غريب" لكن مفيدة. الفكرة: نتعامل مع المؤشر للـ base class، ونخلّي الدالة تتصرف حسب نوع الكائن الحقيقي.
+      </p>
+      <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() {   // virtual = نفّذ دالة الابن لو وُجدت
+        cout &lt;&lt; "Drawing shape..." &lt;&lt; endl;
+    }
+};
+
+class Circle : public Shape {
+public:
+    void draw() override {
+        cout &lt;&lt; "Drawing circle" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Shape *s;        // مؤشر لكلاس عام
+    Circle c;
+    s = &c;
+    s-&gt;draw();       // ينفّذ draw تبعة Circle مش Shape
+    return 0;
+}</code></pre>
+      <div class="en">
+        This is runtime polymorphism. The call is resolved at runtime thanks to <code>virtual</code>.
+      </div>
+    </section>
+
+    <!-- ملفات -->
+    <section id="fileio">
+      <h2>11. التعامل مع الملفات (File I/O) – تمهيد</h2>
+      <p>
+        عشان تخزّن بياناتك خارج البرنامج، تستعمل ملفات.
+      </p>
+      <pre><code>#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    ofstream out("data.txt");     // فتح ملف للكتابة
+    out &lt;&lt; "Hello from Qais" &lt;&lt; endl;
+    out.close();
+
+    ifstream in("data.txt");      // فتح ملف للقراءة
+    string line;
+    while (getline(in, line)) {
+        cout &lt;&lt; line &lt;&lt; endl;
+    }
+    in.close();
+    return 0;
+}</code></pre>
+      <div class="en">
+        <code>ofstream</code> for writing, <code>ifstream</code> for reading, <code>fstream</code> for both.
+      </div>
+    </section>
+
+    <!-- زر الانتقال للامتحان -->
+    <section id="to-questions">
+      <h2>12. الاختبار النهائي</h2>
+      <p>
+        جهّزت لك صفحة منفصلة فيها 50 سؤال ضع دائرة على الأساسيات + شوية أسئلة على الكلاسات.
+      </p>
+      <div class="btn-wrap">
+        <a class="btn" href="questions.html">انتقل إلى صفحة الأسئلة (50 سؤال)</a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    هذا الكورس صُمم للعرض ضمن صفحة واحدة - إعداد الطالب: قيس طلال الجازي
+  </footer>
+
+</body>
+</html>

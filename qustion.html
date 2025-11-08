@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>أسئلة تفاعلية C++ - قيس طلال الجازي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --card: #ffffff;
+      --accent: #2563eb;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #e2e8f0;
+    }
+    header {
+      background: linear-gradient(120deg, #0f172a, #1d4ed8);
+      color: #fff;
+      text-align: center;
+      padding: 1.4rem 1rem 1.1rem;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 0.3rem 0 0; opacity: .9; }
+    .container {
+      max-width: 980px;
+      margin: auto;
+      padding: 1.5rem 0.6rem 3rem;
+    }
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .back {
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+    .score {
+      background: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.5rem;
+      font-size: 0.78rem;
+      box-shadow: 0 4px 14px rgba(15,23,42,0.06);
+    }
+    .question-card {
+      background: #fff;
+      border-radius: 0.75rem;
+      padding: 1rem 0.8rem 0.7rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .question-title { font-weight: 600; }
+    .q-num {
+      background: rgba(37, 99, 235, 0.12);
+      color: #1d4ed8;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .choice-btn {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: #fff;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      text-align: right;
+      cursor: pointer;
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+      transition: 0.15s;
+      min-height: 2.3rem;
+    }
+    .choice-btn:hover {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    .choice-letter {
+      background: #e2e8f0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #0f172a;
+      flex: 0 0 1.5rem;
+    }
+    .feedback {
+      font-size: 0.78rem;
+      padding: 0.4rem 0.5rem 0.55rem;
+      border-radius: 0.4rem;
+      display: none;
+      margin-bottom: 0.2rem;
+    }
+    .feedback.correct {
+      background: rgba(34, 197, 94, 0.12);
+      color: #166534;
+      border: 1px solid rgba(22, 101, 52, 0.2);
+    }
+    .feedback.wrong {
+      background: rgba(239, 68, 68, 0.1);
+      color: #b91c1c;
+      border: 1px solid rgba(185, 28, 28, 0.2);
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.7rem;
+      color: #475569;
+    }
+    /* موبايل */
+    @media(max-width:600px){
+      header h1 { font-size: 1.05rem; }
+      .choices{ grid-template-columns: 1fr; }
+      .choice-btn{ width: 100%; }
+      .question-header{ flex-direction: column; align-items: flex-start; }
+      .top-actions{ flex-direction: column; align-items: flex-start; }
+      .container{ padding: 1rem 0.4rem 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>أسئلة تفاعلية على لغة ++C</h1>
+    <p>اضغط الجواب وشوف التصحيح – إعداد الطالب: قيس طلال الجازي</p>
+  </header>
+
+  <div class="container">
+    <div class="top-actions">
+      <a class="back" href="index.html">⬅ العودة للموقع</a>
+      <div class="score">الصحيح: <span id="correctCount">0</span> / 50</div>
+    </div>
+
+    <div id="questionsWrapper"></div>
+  </div>
+
+  <footer>
+    صفحة الأسئلة التفاعلية - لقيس طلال الجازي
+  </footer>
+
+  <script>
+    // 50 سؤال
+    const questions = [
+      {id:1,q:"أي جملة صحيحة لبدء برنامج C++؟",choices:{A:"start()",B:"program()",C:"int main()",D:"void run()"},correct:"C",explain:"برنامج C++ يبدأ من الدالة main."},
+      {id:2,q:"أي مكتبة نستخدمها للطباعة بـ cout؟",choices:{A:"<math>",B:"<iostream>",C:"<string>",D:"<stdio>"},correct:"B",explain:"cout و cin داخل iostream."},
+      {id:3,q:"ما نوع البيانات المناسب للعمر؟",choices:{A:"char",B:"int",C:"bool",D:"string"},correct:"B",explain:"العمر قيمة صحيحة فـ int أنسب."},
+      {id:4,q:"أي سطر يُدخل قيمة من المستخدم؟",choices:{A:"cin >> x;",B:"cout << x;",C:"input(x);",D:"read x;"},correct:"A",explain:"cin هو كائن الإدخال القياسي."},
+      {id:5,q:"أي من التالي اسم متغير صحيح؟",choices:{A:"7num",B:"num-1",C:"num_1",D:"num#1"},correct:"C",explain:"لا يبدأ برقم ولا يحتوي رموز غريبة."},
+      {id:6,q:"ما نتيجة: int x=5; x++; ؟",choices:{A:"4",B:"5",C:"6",D:"7"},correct:"C",explain:"x++ تزيده 1 فيصير 6."},
+      {id:7,q:"أي عامل للمقارنة؟",choices:{A:"+=",B:"==",C:"*=",D:"%"},correct:"B",explain:"== يستخدم للمقارنة بين قيمتين."},
+      {id:8,q:"أي جملة شرطية صحيحة؟",choices:{A:"if x>0 then",B:"if (x>0) { ... }",C:"if x>0:",D:"if x>0 do ..."},correct:"B",explain:"صيغة if في C++ تستخدم أقواس."},
+      {id:9,q:"أي نوع يخزن نص؟",choices:{A:"int",B:"string",C:"double",D:"char"},correct:"B",explain:"string لسلاسل النصوص، char لحرف واحد."},
+      {id:10,q:"أي محرف يستخدم لسطر جديد؟",choices:{A:"\\b",B:"\\t",C:"\\n",D:"\\r"},correct:"C",explain:"\\n تعني سطر جديد."},
+      {id:11,q:"الكلمة المحجوزة لتعريف ثابت؟",choices:{A:"const",B:"final",C:"static",D:"fixed"},correct:"A",explain:"const تمنع التغيير."},
+      {id:12,q:"ما ترتيب التنفيذ الصحيح؟",choices:{A:"+ قبل *",B:"* قبل +",C:"= قبل *",D:"&& قبل *"},correct:"B",explain:"الضرب والقسمة قبل الجمع والطرح."},
+      {id:13,q:"عبارة صحيحة عن C++:",choices:{A:"لا تدعم OOP",B:"لغة عالية المستوى وتدعم الكائنات",C:"تعمل فقط على لينكس",D:"لا تدعم الدوال"},correct:"B",explain:"C++ متعددة الأنماط وتدعم OOP."},
+      {id:14,q:"أي سطر يعرّف مصفوفة من 5 أعداد؟",choices:{A:"int a;",B:"int a[5];",C:"int[5] a;",D:"array int a(5);"},correct:"B",explain:"الصيغة: النوع + الاسم + [الحجم]."},
+      {id:15,q:"أي عامل منطقي يعيد true إذا تحقق الشرطان؟",choices:{A:"||",B:"&&",C:"!",D:"%"},correct:"B",explain:"&& هي AND المنطقية."},
+      {id:16,q:"نستخدم #include في:",choices:{A:"runtime",B:"preprocessing",C:"linking",D:"execution"},correct:"B",explain:"يتم في مرحلة المعالجة المسبقة."},
+      {id:17,q:"أي سطر دالة يعيد عددًا صحيحًا؟",choices:{A:"void sum()",B:"int sum()",C:"double sum()",D:"string sum()"},correct:"B",explain:"نوع الإرجاع int يعني دالة تعيد عددًا صحيحًا."},
+      {id:18,q:"ما هو المخرج؟",choices:{A:"البيانات التي ندخلها",B:"النتيجة التي يطبعها البرنامج",C:"اسم المتغير",D:"عنوان الذاكرة"},correct:"B",explain:"output = ما يظهر للمستخدم."},
+      {id:19,q:"جملة صحيحة لتعليق سطر واحد:",choices:{A:"/* comment */",B:"# comment",C:"// comment",D:"<!-- comment -->"},correct:"C",explain:"// للتعليق القصير في C++."},
+      {id:20,q:"أي نوع يخزن true/false؟",choices:{A:"logic",B:"bool",C:"flag",D:"check"},correct:"B",explain:"bool النوع المنطقي."},
+      {id:21,q:"ما فائدة return 0; في main؟",choices:{A:"طباعة 0",B:"إنهاء البرنامج بنجاح",C:"مسح الشاشة",D:"إدخال بيانات"},correct:"B",explain:"تعني أن البرنامج انتهى بنجاح."},
+      {id:22,q:"ما معنى cin >> x; ؟",choices:{A:"اطبع x",B:"اقرأ إلى x",C:"اجمع x",D:"احذف x"},correct:"B",explain:"cin تستقبل البيانات من المستخدم."},
+      {id:23,q:"في for(int i=0; i<5; i++) كم مرة تتنفذ الحلقة؟",choices:{A:"3",B:"4",C:"5",D:"6"},correct:"C",explain:"من 0 إلى 4 = خمس مرات."},
+      {id:24,q:"أيهم اسم غير صالح؟",choices:{A:"total",B:"Total",C:"total_sum",D:"int"},correct:"D",explain:"int كلمة محجوزة."},
+      {id:25,q:"ما الكلمة المفتاحية لتعريف كلاس؟",choices:{A:"object",B:"class",C:"struct",D:"type"},correct:"B",explain:"class هي الصح."},
+      {id:26,q:"أي خيار يطبع: Sum = 15 ؟",choices:{A:'cout << "Sum = " << sum;',B:'cout >> "Sum = " >> sum;',C:'cin << "Sum = " << sum;',D:'print("Sum = ", sum);'},correct:"A",explain:"نستخدم cout مع <<."},
+      {id:27,q:"أي جملة تستخدم في اتخاذ القرار؟",choices:{A:"for",B:"if",C:"while",D:"do"},correct:"B",explain:"if جملة قرار."},
+      {id:28,q:"أيًا مما يلي ليس عاملَ مقارنة؟",choices:{A:">=",B:"!=",C:"=",D:"<"},correct:"C",explain:"= للإسناد وليس للمقارنة."},
+      {id:29,q:"ما فائدة {} بعد main()؟",choices:{A:"تعليق",B:"حدود جسم الدالة",C:"مكتبة",D:"شرط"},correct:"B",explain:"الجسم بين الأقواس المعقوفة."},
+      {id:30,q:"ما ناتج: int x=10; int y=3; cout<<x/y; ؟",choices:{A:"3.333",B:"3",C:"0",D:"خطأ"},correct:"B",explain:"قسمة أعداد صحيحة تعطي صحيح."},
+      {id:31,q:"أي سطر يعرف مؤشرًا؟",choices:{A:"int *p;",B:"int &p;",C:"int p[];",D:"pointer p;"},correct:"A",explain:"* قبل الاسم يعني pointer."},
+      {id:32,q:"في الكلاس، أين نضع الدوال العامة؟",choices:{A:"private:",B:"public:",C:"hidden:",D:"خارج الكلاس فقط"},correct:"B",explain:"public يسمح بالوصول من الخارج."},
+      {id:33,q:"أي عبارة تصف الـ OOP؟",choices:{A:"تعليمات متسلسلة فقط",B:"تنظيم الكود في كائنات لها بيانات ودوال",C:"استخدام جداول فقط",D:"منع استخدام الدوال"},correct:"B",explain:"هذا تعريف البرمجة كائنية التوجه."},
+      {id:34,q:"ما العامل الذي يعطي باقي القسمة؟",choices:{A:"/",B:"%",C:"*",D:"&&"},correct:"B",explain:"% يعيد الباقي."},
+      {id:35,q:"أي جملة تعريف سلسلة نصية؟",choices:{A:'string s = "C++";',B:'text s = "C++";',C:'char s = "C++";',D:'int s = "C++";'},correct:"A",explain:"string هو النوع الصحيح."},
+      {id:36,q:"أي مما يلي يحدث قبل الترجمة؟",choices:{A:"التنفيذ",B:"المعالجة المسبقة",C:"الإدخال",D:"الإخراج"},correct:"B",explain:"preprocessing قبل compilation."},
+      {id:37,q:"أي جملة تكرار قد لا تُنفذ أبدًا؟",choices:{A:"do..while",B:"for",C:"الكل",D:"لا شيء"},correct:"B",explain:"for (و while) قد لا تدخل لو الشرط خطأ من البداية."},
+      {id:38,q:"أي جملة تكرار تُنفّذ مرة واحدة على الأقل؟",choices:{A:"do..while",B:"for",C:"while",D:"if"},correct:"A",explain:"do..while تنفّذ ثم تفحص."},
+      {id:39,q:"ما معنى using namespace std; ؟",choices:{A:"إلغاء cout",B:"استخدام cout/cin بدون std::",C:"إلغاء الإدخال",D:"تعريف متغير"},correct:"B",explain:"تختصر std::."},
+      {id:40,q:"أي مما يلي مثال على إسناد مركب؟",choices:{A:"x = x + 3;",B:"x += 3;",C:"x == 3;",D:"x => 3;"},correct:"B",explain:"x += 3 هو إسناد مركب."},
+      {id:41,q:"أي نوع أنسب للراتب الدقيق؟",choices:{A:"int",B:"double",C:"char",D:"bool"},correct:"B",explain:"double للكسور."},
+      {id:42,q:"const float PI = 3.14; ماذا يعني؟",choices:{A:"يمكن تغيير PI",B:"لا يمكن تغيير PI",C:"PI نص",D:"PI حرف"},correct:"B",explain:"const يمنع التغيير."},
+      {id:43,q:"تحويل الخوارزمية إلى كود C++ يسمى؟",choices:{A:"Debugging",B:"Coding / Programming",C:"Testing",D:"Documenting"},correct:"B",explain:"هو فعل البرمجة."},
+      {id:44,q:"السطر // my first program in C++ ؟",choices:{A:"يُنفّذ",B:"يُترجم",C:"تعليق توثيقي",D:"إدخال"},correct:"C",explain:"// تعليق."},
+      {id:45,q:"أي من التالي مثال على شرط ثلاثي؟",choices:{A:"a = (x>y)? x : y;",B:"if (x>y) a=x;",C:"for (x>y)",D:"cin >> x>y;"},correct:"A",explain:"هذه صيغة ternary."},
+      {id:46,q:"ما الذي يحدد أولوية التنفيذ؟",choices:{A:"ترتيب الكتابة",B:"قواعد precedence في C++",C:"نظام التشغيل",D:"اسم المتغير"},correct:"B",explain:"اللغة تحدد الأولوية."},
+      {id:47,q:"أي جملة تصف “المجمّع”؟",choices:{A:"متغير",B:"تعبير",C:"أسلوب لجمع قيم متتالية",D:"كلاس"},correct:"C",explain:"المجمع = accumulator."},
+      {id:48,q:"لماذا نختبر البرنامج بعد كتابته؟",choices:{A:"لزيادة حجمه",B:"للتأكد من صحة العمل",C:"لحذف المكتبات",D:"لمنع الإدخال"},correct:"B",explain:"الاختبار للتأكد من الصحة."},
+      {id:49,q:"أي من التالي أداة إخراج في C++؟",choices:{A:"cout",B:"out<<",C:"print<<",D:"write<<"},correct:"A",explain:"cout هو القياسي."},
+      {id:50,q:"في الكلاس: class A { public: int x; }; ماذا تعني public: ؟",choices:{A:"المتغير x خاص",B:"المتغير x عام ويمكن الوصول له من الخارج",C:"المتغير x ثابت",D:"الكلاس مغلق"},correct:"B",explain:"public يعني قابل للوصول من الخارج."}
+    ];
+
+    const wrapper = document.getElementById("questionsWrapper");
+    let correctCount = 0;
+
+    // بناء الكروت
+    questions.forEach(q => {
+      const card = document.createElement("div");
+      card.className = "question-card";
+      card.innerHTML = `
+        <div class="question-header">
+          <span class="question-title">${q.q}</span>
+          <span class="q-num">سؤال ${q.id}</span>
+        </div>
+        <div class="choices" id="choices-${q.id}">
+          ${Object.entries(q.choices).map(([key, val]) => `
+            <button class="choice-btn" data-q="${q.id}" data-choice="${key}">
+              <span class="choice-letter">${key}</span>
+              <span>${val}</span>
+            </button>
+          `).join("")}
+        </div>
+        <div class="feedback" id="feedback-${q.id}"></div>
+      `;
+      wrapper.appendChild(card);
+    });
+
+    function updateScore(){
+      document.getElementById("correctCount").textContent = correctCount;
+    }
+
+    wrapper.addEventListener("click", function(e){
+      const btn = e.target.closest(".choice-btn");
+      if(!btn) return;
+      const qid = parseInt(btn.dataset.q);
+      const choice = btn.dataset.choice;
+      const question = questions.find(q => q.id === qid);
+      const feedback = document.getElementById("feedback-" + qid);
+      const choicesDiv = document.getElementById("choices-" + qid);
+
+      const alreadyCorrect = feedback.dataset.correct === "yes";
+
+      if(choice === question.correct){
+        feedback.style.display = "block";
+        feedback.className = "feedback correct";
+        feedback.textContent = "✅ إجابة صحيحة: " + question.explain;
+        feedback.dataset.correct = "yes";
+        [...choicesDiv.children].forEach(c => c.style.opacity = "0.4");
+        btn.style.opacity = "1";
+        btn.style.borderColor = "green";
+        if(!alreadyCorrect){
+          correctCount++;
+          updateScore();
+        }
+      } else {
+        feedback.style.display = "block";
+        feedback.className = "feedback wrong";
+        feedback.textContent = "❌ إجابة خاطئة. الجواب الصحيح هو (" + question.correct + "). " + question.explain;
+        // تمييز الصح
+        [...choicesDiv.children].forEach(c => {
+          if(c.dataset.choice === question.correct){
+            c.style.borderColor = "green";
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
